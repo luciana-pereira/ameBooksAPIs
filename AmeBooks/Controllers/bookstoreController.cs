@@ -69,5 +69,19 @@ namespace bookstore.Controllers
         {
             return await _context.todoProducts.ToListAsync();
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Product>> GetItem(int id)
+        {
+            var item = await _context.todoProducts.FindAsync(id.ToString());
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            return item;
+        }
+
     }
 }
