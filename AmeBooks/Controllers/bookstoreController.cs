@@ -1,4 +1,7 @@
-﻿using AmeBooks.Models;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
+using System.Threading.Tasks;
+using AmeBooks.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bookstore.Controllers
@@ -59,6 +62,12 @@ namespace bookstore.Controllers
             });
 
             _context.SaveChanges();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        {
+            return await _context.todoProducts.ToListAsync();
         }
     }
 }
