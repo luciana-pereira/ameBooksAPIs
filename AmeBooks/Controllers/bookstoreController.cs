@@ -12,6 +12,8 @@ namespace bookstore.Controllers
     {
         private readonly ToDoContext _context;
 
+        public string GetProduct { get; private set; }
+
         public bookstoreController(ToDoContext context)
         {
             _context = context;
@@ -81,6 +83,16 @@ namespace bookstore.Controllers
             }
 
             return item;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Product>> PostProduct(Product product)
+        {
+            _context.todoProducts.Add(product);
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(GetProduct, new { id = product.ID }, product);
         }
 
     }
