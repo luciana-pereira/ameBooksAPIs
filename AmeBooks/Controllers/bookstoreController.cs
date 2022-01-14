@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using AmeBooks.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,8 +12,6 @@ namespace bookstore.Controllers
     public class bookstoreController : ControllerBase
     {
         private readonly ToDoContext _context;
-
-        public string GetProduct { get; private set; }
 
         public bookstoreController(ToDoContext context)
         {
@@ -64,12 +63,13 @@ namespace bookstore.Controllers
             });
 
             _context.SaveChanges();
+
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public  ActionResult<List<Product>> GetProducts()
         {
-            return await _context.todoProducts.ToListAsync();
+            return  _context.todoProducts.ToList();
         }
 
         [HttpGet("{id}")]
@@ -92,7 +92,22 @@ namespace bookstore.Controllers
 
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(GetProduct, new { id = product.ID }, product);
+            return CreatedAtAction(nameof(GetItem), new { id = product.ID }, product);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Product>> DeleteProduct(int id)
+        {
+            var product = await _context.todoProducts.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            _context.todoProducts.Remove(product);
+            await _context.SaveChangesAsync();
+
+            return product;
         }
 
     }
